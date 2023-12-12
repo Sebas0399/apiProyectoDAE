@@ -1,4 +1,4 @@
-package com.mercado.security.entity;
+package com.mercado.security.repository.entity;
 
 import com.mercado.security.util.Role;
 import lombok.AllArgsConstructor;

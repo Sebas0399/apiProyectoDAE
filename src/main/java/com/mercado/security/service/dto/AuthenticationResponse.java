@@ -1,4 +1,4 @@
-package com.mercado.security.dto;
+package com.mercado.security.service.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

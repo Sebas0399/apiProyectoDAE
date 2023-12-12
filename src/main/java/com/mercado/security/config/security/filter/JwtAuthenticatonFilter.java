@@ -1,6 +1,6 @@
 package com.mercado.security.config.security.filter;
 
-import com.mercado.security.entity.Usuario;
+import com.mercado.security.repository.entity.Usuario;
 import com.mercado.security.repository.UsuarioRepository;
 import com.mercado.security.service.JwtService;
 import jakarta.servlet.FilterChain;

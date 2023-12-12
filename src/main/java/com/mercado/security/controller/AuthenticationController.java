@@ -1,7 +1,7 @@
 package com.mercado.security.controller;
 
-import com.mercado.security.dto.AuthenticationRequest;
-import com.mercado.security.dto.AuthenticationResponse;
+import com.mercado.security.service.dto.AuthenticationRequest;
+import com.mercado.security.service.dto.AuthenticationResponse;
 import com.mercado.security.service.AuthenticationService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

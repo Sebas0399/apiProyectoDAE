@@ -1,6 +1,6 @@
 package com.mercado.security.service;
 
-import com.mercado.security.entity.Usuario;
+import com.mercado.security.repository.entity.Usuario;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;

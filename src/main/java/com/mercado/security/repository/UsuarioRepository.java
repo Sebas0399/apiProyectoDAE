@@ -1,6 +1,6 @@
 package com.mercado.security.repository;
 
-import com.mercado.security.entity.Usuario;
+import com.mercado.security.repository.entity.Usuario;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 

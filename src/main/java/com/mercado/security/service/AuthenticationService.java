@@ -1,8 +1,8 @@
 package com.mercado.security.service;
 
-import com.mercado.security.dto.AuthenticationRequest;
-import com.mercado.security.dto.AuthenticationResponse;
-import com.mercado.security.entity.Usuario;
+import com.mercado.security.service.dto.AuthenticationRequest;
+import com.mercado.security.service.dto.AuthenticationResponse;
+import com.mercado.security.repository.entity.Usuario;
 import com.mercado.security.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;

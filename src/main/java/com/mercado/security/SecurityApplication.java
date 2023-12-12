@@ -1,7 +1,5 @@
 package com.mercado.security;
 
-import com.mercado.security.entity.Guia;
-import com.mercado.security.repository.GuiaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -18,7 +16,6 @@ public class SecurityApplication {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	@Autowired
-	private GuiaRepository guiaRepository;
 	@Bean
 	public CommandLineRunner createPasswordsCommand(){
 		return  args -> {
