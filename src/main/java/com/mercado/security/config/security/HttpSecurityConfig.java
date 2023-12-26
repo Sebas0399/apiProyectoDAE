@@ -34,6 +34,9 @@ public class HttpSecurityConfig {
                     authConfig.requestMatchers(HttpMethod.GET,"/auth/public-access").permitAll();
                     authConfig.requestMatchers("/error").permitAll();
                     authConfig.requestMatchers(HttpMethod.POST,"/api/process-pdf").permitAll();
+                    authConfig.requestMatchers(HttpMethod.GET,"/empresas/**").permitAll();
+                    authConfig.requestMatchers(HttpMethod.POST,"/empresas").permitAll();
+                    authConfig.requestMatchers(HttpMethod.POST,"/insumos").permitAll();
 
                     // authConfig.requestMatchers(HttpMethod.GET,"/guias").hasAnyAuthority(Permission.READ_ALL_PRODUCTS.name());
 

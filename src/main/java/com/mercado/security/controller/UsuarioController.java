@@ -1,0 +1,30 @@
+package com.mercado.security.controller;
+
+import com.mercado.security.repository.UsuarioRepository;
+import com.mercado.security.repository.entity.Empresa;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/usuarios")
+@CrossOrigin
+public class UsuarioController {
+    @Autowired
+    UsuarioRepository usuarioRepository;
+
+    public ResponseEntity<List<Empresa>> getEmpresas(@PathVariable String cedula){
+        List<Empresa>empresas=usuarioRepository.findByCedula(cedula);
+        if(empresas.isEmpty()){
+            return ResponseEntity.internalServerError().body(null);
+        }
+        else{
+            return ResponseEntity.ok().body(empresas);
+        }
+    }
+}
