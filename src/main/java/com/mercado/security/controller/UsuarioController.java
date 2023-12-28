@@ -2,12 +2,11 @@ package com.mercado.security.controller;
 
 import com.mercado.security.repository.UsuarioRepository;
 import com.mercado.security.repository.entity.Empresa;
+import com.mercado.security.repository.entity.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,7 +16,8 @@ import java.util.List;
 public class UsuarioController {
     @Autowired
     UsuarioRepository usuarioRepository;
-
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     public ResponseEntity<List<Empresa>> getEmpresas(@PathVariable String cedula){
         List<Empresa>empresas=usuarioRepository.findByCedula(cedula);
         if(empresas.isEmpty()){
@@ -26,5 +26,15 @@ public class UsuarioController {
         else{
             return ResponseEntity.ok().body(empresas);
         }
+    }
+
+    @PostMapping("/registro")
+    public ResponseEntity<Usuario> registro(@RequestBody Usuario usuario){
+        String key= usuario.getPassword();
+        usuario.setPassword(passwordEncoder.encode(key));
+
+
+        usuarioRepository.insert(usuario);
+        return ResponseEntity.ok(usuario);
     }
 }

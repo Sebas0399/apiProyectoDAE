@@ -19,9 +19,6 @@ public class SecurityApplication {
 	@Bean
 	public CommandLineRunner createPasswordsCommand(){
 		return  args -> {
-			System.out.println(passwordEncoder.encode("clave123"));
-			System.out.println(passwordEncoder.encode("clave456"));
-
 
 		};
 	}

@@ -42,7 +42,7 @@ public class HttpSecurityConfig {
 
                     //authConfig.requestMatchers(HttpMethod.POST,"/guias").hasAnyAuthority(Permission.SAVE_ONE_PRODUCT.name());
 
-                    authConfig.anyRequest().denyAll();
+                    authConfig.anyRequest().permitAll();
 
                 });
         return httpSecurity.build();

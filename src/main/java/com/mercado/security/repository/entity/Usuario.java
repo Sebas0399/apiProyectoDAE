@@ -27,9 +27,7 @@ public class Usuario implements UserDetails {
     private String apellidos;
     private String cedula;
     private String password;
-    private  String destino;
-    private String local;
-    private String plataforma;
+
 
     private Role rol;
 

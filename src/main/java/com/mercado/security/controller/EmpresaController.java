@@ -24,11 +24,8 @@ public class EmpresaController {
         // Aquí debes cargar la dirección utilizando su ID
         Empresa empresa = empresaRepository.findByRuc(ruc);
         if (empresa != null) {
-            System.out.println(empresa);
 
             List<Insumo> insumo =insumoRepository.findByEmpresa(empresa);
-            System.out.println(insumo);
-
             return insumo;
         } else {
             // Manejar la situación en la que la dirección no existe

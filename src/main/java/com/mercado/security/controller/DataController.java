@@ -28,7 +28,5 @@ public class DataController {
         else{
             return ResponseEntity.ok().body(respuesta);
         }
-
-
     }
 }
