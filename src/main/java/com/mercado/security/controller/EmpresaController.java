@@ -34,6 +34,7 @@ public class EmpresaController {
     }
     @PostMapping
     public void insertar(@RequestBody Empresa empresa){
+        System.out.println(empresa);
         empresaRepository.save(empresa);
 
     }
