@@ -2,8 +2,10 @@ package com.mercado.security.controller;
 
 import com.mercado.security.repository.EmpresaRepository;
 import com.mercado.security.repository.InsumoRepository;
+import com.mercado.security.repository.UsuarioRepository;
 import com.mercado.security.repository.entity.Empresa;
 import com.mercado.security.repository.entity.Insumo;
+import com.mercado.security.repository.entity.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +21,8 @@ public class EmpresaController {
 
     @Autowired
     InsumoRepository insumoRepository;
+    @Autowired
+    UsuarioRepository usuarioRepository;
     @GetMapping("/{ruc}/insumos")
     public List<Insumo> obtenerInsumosPorEmpresa(@PathVariable String ruc) {
         // Aquí debes cargar la dirección utilizando su ID
@@ -34,7 +38,9 @@ public class EmpresaController {
     }
     @PostMapping
     public void insertar(@RequestBody Empresa empresa){
-        System.out.println(empresa);
+
+        Usuario usuario=usuarioRepository.findUserByCedula(empresa.getUsuario().getCedula()).get();
+        empresa.setUsuario(usuario);
         empresaRepository.save(empresa);
 
     }

@@ -13,5 +13,5 @@ public interface UsuarioRepository extends MongoRepository<Usuario,String> {
     @Query("{cedula:'?0'}")
     Optional<Usuario> findUserByCedula(String username);
 
-    List<Empresa> findByCedula(String cedula);
+
 }

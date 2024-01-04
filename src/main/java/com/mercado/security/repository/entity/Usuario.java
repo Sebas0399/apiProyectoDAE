@@ -30,7 +30,8 @@ public class Usuario implements UserDetails {
 
 
     private Role rol;
-
+    @DBRef
+    private List<Empresa> empresas;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority>authorities=

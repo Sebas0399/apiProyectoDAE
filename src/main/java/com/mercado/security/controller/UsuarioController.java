@@ -1,5 +1,6 @@
 package com.mercado.security.controller;
 
+import com.mercado.security.repository.EmpresaRepository;
 import com.mercado.security.repository.UsuarioRepository;
 import com.mercado.security.repository.entity.Empresa;
 import com.mercado.security.repository.entity.Usuario;
@@ -17,9 +18,14 @@ public class UsuarioController {
     @Autowired
     UsuarioRepository usuarioRepository;
     @Autowired
+    EmpresaRepository empresaRepository;
+    @Autowired
     private PasswordEncoder passwordEncoder;
+    @GetMapping("/{cedula}/empresas")
+
     public ResponseEntity<List<Empresa>> getEmpresas(@PathVariable String cedula){
-        List<Empresa>empresas=usuarioRepository.findByCedula(cedula);
+        Usuario usuario=usuarioRepository.findUserByCedula(cedula).get();
+        List<Empresa>empresas=empresaRepository.findEmpresasByUsuario_Id(usuario.getId());
         if(empresas.isEmpty()){
             return ResponseEntity.internalServerError().body(null);
         }

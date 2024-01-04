@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -21,9 +22,7 @@ public class DataService {
         List<List<String>>datosSalida=new ArrayList<>();
 
         for (Map.Entry<Integer, List<String>> entry : textoExtraido.entrySet()) {
-            Integer pageNumber = entry.getKey();
             List<String> texts = entry.getValue();
-            System.out.println(texts);
             var index=0;
             for(int i=0;i<texts.size();i++){
                 if(texts.get(i).contains("Cantidad de contenedores")){
@@ -35,7 +34,7 @@ public class DataService {
                 System.out.println(texts.get(index+1));
                 var cantida=new BigDecimal(texts.get(index+1));
 
-                var merma=cantida.multiply(Constante.merma);
+                var merma=cantida.multiply(Constante.merma).round(new MathContext(2));
                 datosSalida.add(List.of(cantida.toString(),merma.toString()));
 
             }
