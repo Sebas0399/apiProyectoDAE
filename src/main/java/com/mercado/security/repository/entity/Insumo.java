@@ -16,7 +16,10 @@ public class Insumo {
     private String id;
     private String codigo;
     private String subpartida;
+    private String complementario;
+    private String suplementario;
     private String descripcion;
+    private String tipoUnidad;
     @DBRef
     private Empresa empresa;
 
