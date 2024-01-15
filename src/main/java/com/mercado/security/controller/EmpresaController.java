@@ -7,6 +7,7 @@ import com.mercado.security.repository.entity.Empresa;
 import com.mercado.security.repository.entity.Insumo;
 import com.mercado.security.repository.entity.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,11 +38,37 @@ public class EmpresaController {
         }
     }
     @PostMapping
-    public void insertar(@RequestBody Empresa empresa){
-
+    public ResponseEntity<String> insertar(@RequestBody Empresa empresa){
+    try{
         Usuario usuario=usuarioRepository.findUserByCedula(empresa.getUsuario().getCedula()).get();
         empresa.setUsuario(usuario);
+
         empresaRepository.save(empresa);
+
+        return  ResponseEntity.status(HttpStatus.OK).body("Success");
+
+    }
+    catch (Exception e){
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al insertar la empresa: " + e.getMessage());
+
+    }
+
+
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> eliminar(@PathVariable String id){
+        try{
+            Empresa empresa = empresaRepository.findById(id).get();
+            empresaRepository.deleteById(id);
+
+            return  ResponseEntity.status(HttpStatus.OK).body("Success");
+
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar la empresa: " + e.getMessage());
+
+        }
+
 
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -34,6 +35,18 @@ public class UsuarioController {
         }
     }
 
+    @GetMapping("/{cedula}")
+
+    public ResponseEntity<Usuario> getUsuario(@PathVariable String cedula){
+        Usuario usuario=usuarioRepository.findUserByCedula(cedula).get();
+        if(usuario==null){
+            return ResponseEntity.internalServerError().body(null);
+        }
+        else{
+            return ResponseEntity.ok().body(usuario);
+        }
+    }
+
     @PostMapping("/registro")
     public ResponseEntity<Usuario> registro(@RequestBody Usuario usuario){
         String key= usuario.getPassword();
@@ -42,5 +55,20 @@ public class UsuarioController {
 
         usuarioRepository.insert(usuario);
         return ResponseEntity.ok(usuario);
+    }
+    @PutMapping("/{cedula}")
+    public ResponseEntity<Usuario> updateUsuario(@PathVariable String cedula) {
+        Optional<Usuario> optionalUsuario = usuarioRepository.findUserByCedula(cedula);
+
+        if (optionalUsuario.isPresent()) {
+            Usuario existingUsuario = optionalUsuario.get();
+
+            existingUsuario.setCreditos(existingUsuario.getCreditos()-1);
+            usuarioRepository.save(existingUsuario);
+
+            return ResponseEntity.ok(existingUsuario);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
