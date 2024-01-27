@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -34,8 +35,8 @@ public class DataService {
                 System.out.println(texts.get(index+1));
                 var cantida=new BigDecimal(texts.get(index+1));
 
-                var merma=cantida.multiply(Constante.merma).round(new MathContext(2));
-                datosSalida.add(List.of(cantida.toString(),merma.toString()));
+                var merma=cantida.multiply(Constante.merma).setScale(2, RoundingMode.HALF_UP);
+                datosSalida.add(List.of(cantida.toString(),String.valueOf(merma.intValue())));
 
             }
 
