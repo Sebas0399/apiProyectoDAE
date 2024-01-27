@@ -24,51 +24,69 @@ public class EmpresaController {
     InsumoRepository insumoRepository;
     @Autowired
     UsuarioRepository usuarioRepository;
+
     @GetMapping("/{ruc}/insumos")
     public List<Insumo> obtenerInsumosPorEmpresa(@PathVariable String ruc) {
         // Aquí debes cargar la dirección utilizando su ID
         Empresa empresa = empresaRepository.findByRuc(ruc);
         if (empresa != null) {
 
-            List<Insumo> insumo =insumoRepository.findByEmpresa(empresa);
+            List<Insumo> insumo = insumoRepository.findByEmpresa(empresa);
             return insumo;
         } else {
             // Manejar la situación en la que la dirección no existe
             return null;
         }
     }
+
     @PostMapping
-    public ResponseEntity<String> insertar(@RequestBody Empresa empresa){
-    try{
-        Usuario usuario=usuarioRepository.findUserByCedula(empresa.getUsuario().getCedula()).get();
-        empresa.setUsuario(usuario);
+    public ResponseEntity<String> insertar(@RequestBody Empresa empresa) {
+        try {
+            Usuario usuario = usuarioRepository.findUserByCedula(empresa.getUsuario().getCedula()).get();
+            empresa.setUsuario(usuario);
 
-        empresaRepository.save(empresa);
+            empresaRepository.save(empresa);
 
-        return  ResponseEntity.status(HttpStatus.OK).body("Success");
+            return ResponseEntity.status(HttpStatus.OK).body("Success");
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al insertar la empresa: " + e.getMessage());
+
+        }
+
 
     }
-    catch (Exception e){
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al insertar la empresa: " + e.getMessage());
 
-    }
-
-
-    }
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> eliminar(@PathVariable String id){
-        try{
+    public ResponseEntity<String> eliminar(@PathVariable String id) {
+        try {
             Empresa empresa = empresaRepository.findById(id).get();
             empresaRepository.deleteById(id);
 
-            return  ResponseEntity.status(HttpStatus.OK).body("Success");
+            return ResponseEntity.status(HttpStatus.OK).body("Success");
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar la empresa: " + e.getMessage());
 
         }
 
 
+    }
+
+    @PutMapping
+    public ResponseEntity<Empresa> actualizar(@RequestBody Empresa empresa) {
+        try {
+            Empresa empresaEncontrada = this.empresaRepository.findById(empresa.getId()).get();
+            empresaEncontrada.setRuc(empresa.getRuc());
+            empresaEncontrada.setDireccion(empresa.getNombre());
+            empresaEncontrada.setNombre(empresa.getNombre());
+
+
+            return ResponseEntity.status(HttpStatus.OK).body(empresa);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+
+        }
     }
 }
