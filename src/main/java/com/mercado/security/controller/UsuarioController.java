@@ -4,7 +4,10 @@ import com.mercado.security.repository.EmpresaRepository;
 import com.mercado.security.repository.UsuarioRepository;
 import com.mercado.security.repository.entity.Empresa;
 import com.mercado.security.repository.entity.Usuario;
+import com.mercado.security.util.Role;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -49,12 +52,21 @@ public class UsuarioController {
 
     @PostMapping("/registro")
     public ResponseEntity<Usuario> registro(@RequestBody Usuario usuario){
-        String key= usuario.getPassword();
-        usuario.setPassword(passwordEncoder.encode(key));
+        Optional<Usuario> usuario1=this.usuarioRepository.findUserByCedula(usuario.getCedula());
+        if(usuario1.isEmpty()){
+            String key= usuario.getPassword();
+            usuario.setPassword(passwordEncoder.encode(key));
+            usuario.setRol(Role.COMERCIANTE);
+            usuario.setCreditos(20);
 
+            usuarioRepository.insert(usuario);
+            return ResponseEntity.ok(usuario);
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 
-        usuarioRepository.insert(usuario);
-        return ResponseEntity.ok(usuario);
+        }
+
     }
     @PutMapping("/{cedula}")
     public ResponseEntity<Usuario> updateUsuario(@PathVariable String cedula) {

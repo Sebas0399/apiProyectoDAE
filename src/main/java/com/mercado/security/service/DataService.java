@@ -33,8 +33,10 @@ public class DataService {
             }
             if(index!=0){
                 var cantida=new BigDecimal(texts.get(index+1));
-                var merma=cantida.multiply(Constante.merma).setScale(0, RoundingMode.HALF_UP);
-                datosSalida.add(List.of(cantida.toString(),merma.toString()));
+
+
+                var merma=cantida.multiply(Constante.merma).setScale(2, RoundingMode.HALF_UP);
+                datosSalida.add(List.of(cantida.toString(),String.valueOf(merma.intValue())));
 
             }
 

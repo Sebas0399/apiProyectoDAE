@@ -18,7 +18,7 @@ public class Empresa {
     private String id;
     private String nombre;
     private String ruc;
-        private String direccion;
+    private String direccion;
     @DBRef
     private Usuario usuario;
 }

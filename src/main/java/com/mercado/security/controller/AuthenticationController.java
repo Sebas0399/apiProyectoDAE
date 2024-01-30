@@ -10,11 +10,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin
 public class AuthenticationController {
     @Autowired
 
     private AuthenticationService authenticationService;
-    @PostMapping("/authenticate")
+    @PostMapping
     public ResponseEntity <AuthenticationResponse>login(@RequestBody @Valid AuthenticationRequest authRequest){
         System.out.println(authRequest);
         AuthenticationResponse jwtDto=authenticationService.login(authRequest);
