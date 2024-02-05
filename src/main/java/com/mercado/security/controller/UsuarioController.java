@@ -29,12 +29,12 @@ public class UsuarioController {
 
     public ResponseEntity<List<Empresa>> getEmpresas(@PathVariable String cedula){
         Usuario usuario=usuarioRepository.findUserByCedula(cedula).get();
-        List<Empresa>empresas=empresaRepository.findEmpresasByUsuario_Id(usuario.getId());
+        Optional<List<Empresa>>empresas=empresaRepository.findEmpresasByUsuario_Id(usuario.getId());
         if(empresas.isEmpty()){
             return ResponseEntity.internalServerError().body(null);
         }
         else{
-            return ResponseEntity.ok().body(empresas);
+            return ResponseEntity.status(HttpStatus.OK).body(empresas.get());
         }
     }
 

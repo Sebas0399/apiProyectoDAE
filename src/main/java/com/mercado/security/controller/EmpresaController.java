@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.beans.BeanUtils;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/empresas")
@@ -26,31 +28,29 @@ public class EmpresaController {
     UsuarioRepository usuarioRepository;
 
     @GetMapping("/{ruc}/insumos")
-    public List<Insumo> obtenerInsumosPorEmpresa(@PathVariable String ruc) {
-        // Aquí debes cargar la dirección utilizando su ID
-        Empresa empresa = empresaRepository.findByRuc(ruc);
-        if (empresa != null) {
+    public ResponseEntity<List<Insumo>> obtenerInsumosPorEmpresa(@PathVariable String ruc) {
+        Optional<Empresa> empresa = empresaRepository.findByRuc(ruc);
+        if (empresa.isEmpty()) {
 
-            List<Insumo> insumo = insumoRepository.findByEmpresa(empresa);
-            return insumo;
+            List<Insumo> insumo = insumoRepository.findByEmpresa(empresa.get());
+            return ResponseEntity.status(HttpStatus.OK).body(insumo);
         } else {
-            // Manejar la situación en la que la dirección no existe
-            return null;
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 
     @PostMapping
-    public ResponseEntity<String> insertar(@RequestBody Empresa empresa) {
+    public ResponseEntity<Empresa> insertar(@RequestBody Empresa empresa) {
         try {
             Usuario usuario = usuarioRepository.findUserByCedula(empresa.getUsuario().getCedula()).get();
             empresa.setUsuario(usuario);
 
             empresaRepository.save(empresa);
 
-            return ResponseEntity.status(HttpStatus.OK).body("Success");
+            return ResponseEntity.status(HttpStatus.OK).body(empresa);
 
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al insertar la empresa: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 
         }
 
@@ -60,12 +60,18 @@ public class EmpresaController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminar(@PathVariable String id) {
         try {
-            Empresa empresa = empresaRepository.findById(id).get();
+            Optional<Empresa> empresa = empresaRepository.findById(id);
+
             empresaRepository.deleteById(id);
 
             return ResponseEntity.status(HttpStatus.OK).body("Success");
 
-        } catch (Exception e) {
+        }
+        catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No se encontro la empresa: " + e.getMessage());
+
+        }
+        catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar la empresa: " + e.getMessage());
 
         }
@@ -76,15 +82,19 @@ public class EmpresaController {
     @PutMapping
     public ResponseEntity<Empresa> actualizar(@RequestBody Empresa empresa) {
         try {
-            Empresa empresaEncontrada = this.empresaRepository.findById(empresa.getId()).get();
-            empresaEncontrada.setRuc(empresa.getRuc());
-            empresaEncontrada.setDireccion(empresa.getNombre());
-            empresaEncontrada.setNombre(empresa.getNombre());
+            Optional<Empresa> empresaEncontrada = this.empresaRepository.findById(empresa.getId());
+            //actualizar
+            BeanUtils.copyProperties(empresa,empresaEncontrada,"id");
 
 
             return ResponseEntity.status(HttpStatus.OK).body(empresa);
 
-        } catch (Exception e) {
+        }
+        catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+
+        }
+        catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 
         }

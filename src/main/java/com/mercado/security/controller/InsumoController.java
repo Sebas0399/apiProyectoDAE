@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/insumos")
 @CrossOrigin
@@ -20,16 +22,25 @@ public class InsumoController {
     EmpresaRepository empresaRepository;
 
     @PostMapping
-    public ResponseEntity<Insumo>insertar(@RequestBody Insumo insumo){
-        Empresa empresa=empresaRepository.findByRuc(insumo.getEmpresa().getRuc());
-        insumo.setEmpresa(empresa);
-        try{
-            insumoRepository.save(insumo);
-            return ResponseEntity.status(HttpStatus.CREATED).body(insumo);
-        }
-        catch (Exception e){
+    public ResponseEntity<Insumo> insertar(@RequestBody Insumo insumo) {
+        try {
+            Optional<Empresa> empresaOptional = empresaRepository.findByRuc(insumo.getEmpresa().getRuc());
+
+            if (empresaOptional.isPresent()) {
+                Empresa empresa = empresaOptional.get();
+                insumo.setEmpresa(empresa);
+                insumoRepository.save(insumo);
+
+                // Utiliza ResponseEntity.ok() para respuestas exitosas
+                return ResponseEntity.ok(insumo);
+            } else {
+                // Manejar el caso donde la empresa no existe
+                // Devuelve un ResponseEntity con estado BAD_REQUEST y un mensaje indicando que no se encontró la empresa
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            }
+        } catch (Exception e) {
+            // Manejar otros casos de excepciones con un ResponseEntity con estado INTERNAL_SERVER_ERROR
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-
     }
 }
