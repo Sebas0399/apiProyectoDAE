@@ -21,6 +21,12 @@ public class AuthenticationController {
         AuthenticationResponse jwtDto=authenticationService.login(authRequest);
         return ResponseEntity.ok(jwtDto);
     }
+    @PostMapping("/refresh-token")
+    public ResponseEntity<?> refreshToken(@RequestHeader("Authorization") String oldToken) {
+        System.out.println(oldToken);
+        String newToken = authenticationService.renewToken(oldToken);
+        return ResponseEntity.ok(new AuthenticationResponse(newToken));
+    }
     @GetMapping("/public-access")
     public ResponseEntity<String > publicAccessEndPoint(){
         return ResponseEntity.ok("EndPointPublico");

@@ -32,6 +32,18 @@ public class JwtService {
                 .signWith(generateKey(), SignatureAlgorithm.HS512)
                 .compact();
     }
+    public boolean validateToken(String token) {
+        try {
+            // Parsear el token y extraer sus claims
+            Claims claims = extractAllClaims(token);
+            // Verificar la fecha de expiración
+            Date expirationDate = claims.getExpiration();
+            return !expirationDate.before(new Date()); // Devuelve true si la fecha de expiración no ha pasado
+        } catch (Exception e) {
+            // El token es inválido si ocurre alguna excepción al parsearlo
+            return false;
+        }
+    }
 
     private Key generateKey() {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());

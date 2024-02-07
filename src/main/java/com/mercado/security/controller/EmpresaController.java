@@ -30,7 +30,7 @@ public class EmpresaController {
     @GetMapping("/{ruc}/insumos")
     public ResponseEntity<List<Insumo>> obtenerInsumosPorEmpresa(@PathVariable String ruc) {
         Optional<Empresa> empresa = empresaRepository.findByRuc(ruc);
-        if (empresa.isEmpty()) {
+        if (empresa.isPresent()) {
 
             List<Insumo> insumo = insumoRepository.findByEmpresa(empresa.get());
             return ResponseEntity.status(HttpStatus.OK).body(insumo);
@@ -82,11 +82,10 @@ public class EmpresaController {
     @PutMapping
     public ResponseEntity<Empresa> actualizar(@RequestBody Empresa empresa) {
         try {
-            Optional<Empresa> empresaEncontrada = this.empresaRepository.findById(empresa.getId());
+            Optional<Empresa> empresaEncontrada = this.empresaRepository.findByRuc(empresa.getRuc());
             //actualizar
-            BeanUtils.copyProperties(empresa,empresaEncontrada,"id");
-
-
+            BeanUtils.copyProperties(empresa,empresaEncontrada.get(),"id","usuario");
+            this.empresaRepository.save(empresaEncontrada.get());
             return ResponseEntity.status(HttpStatus.OK).body(empresa);
 
         }
