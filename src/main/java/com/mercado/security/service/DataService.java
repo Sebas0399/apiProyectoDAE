@@ -20,23 +20,27 @@ public class DataService {
     @Autowired
     InsumoRepository insumoRepository;
     public List<List<String>> procesarData(Map<Integer, List<String>> textoExtraido){
+
         List<List<String>>datosSalida=new ArrayList<>();
 
         for (Map.Entry<Integer, List<String>> entry : textoExtraido.entrySet()) {
             List<String> texts = entry.getValue();
             var index=0;
+            var indexDae=0;
             for(int i=0;i<texts.size();i++){
                 if(texts.get(i).contains("Cantidad de contenedores")){
 
                     index=i;
                 }
+                if(texts.get(i).contains("Número de DAE")){
+                    indexDae=i;
+                }
             }
             if(index!=0){
                 var cantida=new BigDecimal(texts.get(index+1));
-
-
+                var daeNum=texts.get(indexDae-1);
                 var merma=cantida.multiply(Constante.merma).setScale(2, RoundingMode.HALF_UP);
-                datosSalida.add(List.of(cantida.toString(),String.valueOf(merma.intValue())));
+                datosSalida.add(List.of(cantida.toString(),String.valueOf(merma.intValue()),daeNum));
 
             }
 
