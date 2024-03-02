@@ -20,6 +20,7 @@ public class Insumo {
     private String suplementario;
     private String descripcion;
     private String tipoUnidad;
+    private Boolean calculaMerma;
     @DBRef
     private Empresa empresa;
 
