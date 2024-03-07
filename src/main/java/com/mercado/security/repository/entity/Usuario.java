@@ -28,6 +28,7 @@ public class Usuario implements UserDetails {
     private String cedula;
     private String password;
     private Integer creditos;
+    private String correo;
 
     private Role rol;
     @DBRef

@@ -13,13 +13,6 @@ public class SecurityApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SecurityApplication.class, args);
 	}
-	@Autowired
-	private PasswordEncoder passwordEncoder;
-	@Autowired
-	@Bean
-	public CommandLineRunner createPasswordsCommand(){
-		return  args -> {
 
-		};
-	}
+
 }

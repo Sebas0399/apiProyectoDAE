@@ -17,13 +17,11 @@ public class AuthenticationController {
     private AuthenticationService authenticationService;
     @PostMapping
     public ResponseEntity <AuthenticationResponse>login(@RequestBody @Valid AuthenticationRequest authRequest){
-        System.out.println(authRequest);
         AuthenticationResponse jwtDto=authenticationService.login(authRequest);
         return ResponseEntity.ok(jwtDto);
     }
     @PostMapping("/refresh-token")
     public ResponseEntity<?> refreshToken(@RequestHeader("Authorization") String oldToken) {
-        System.out.println(oldToken);
         String newToken = authenticationService.renewToken(oldToken);
         return ResponseEntity.ok(new AuthenticationResponse(newToken));
     }

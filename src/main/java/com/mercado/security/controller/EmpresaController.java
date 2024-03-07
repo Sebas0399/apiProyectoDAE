@@ -82,7 +82,7 @@ public class EmpresaController {
     @PutMapping
     public ResponseEntity<Empresa> actualizar(@RequestBody Empresa empresa) {
         try {
-            Optional<Empresa> empresaEncontrada = this.empresaRepository.findByRuc(empresa.getRuc());
+            Optional<Empresa> empresaEncontrada = this.empresaRepository.findById(empresa.getId());
             //actualizar
             BeanUtils.copyProperties(empresa,empresaEncontrada.get(),"id","usuario");
             this.empresaRepository.save(empresaEncontrada.get());
