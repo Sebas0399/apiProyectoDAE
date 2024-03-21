@@ -6,15 +6,18 @@ import com.mercado.security.repository.entity.Empresa;
 import com.mercado.security.repository.entity.Usuario;
 import com.mercado.security.service.mail.EmailService;
 import com.mercado.security.util.Role;
-import jakarta.mail.SendFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -72,13 +75,26 @@ public class UsuarioController {
     }
 
     @PutMapping("/{cedula}")
-    public ResponseEntity<Usuario> updateUsuario(@PathVariable String cedula) {
+    public ResponseEntity<Usuario> updateUsuario(@PathVariable String cedula,@RequestBody Integer consumo) {
         Optional<Usuario> optionalUsuario = usuarioRepository.findUserByCedula(cedula);
 
         if (optionalUsuario.isPresent()) {
             Usuario existingUsuario = optionalUsuario.get();
 
             existingUsuario.setCreditos(existingUsuario.getCreditos() - 1);
+            Map<LocalDate,Integer> existingConsumo=existingUsuario.getConsumo();
+            var consumos=existingConsumo.entrySet();
+            AtomicBoolean existe= new AtomicBoolean(false);
+            consumos.stream().forEach(localDateIntegerEntry -> {
+                if(localDateIntegerEntry.getKey().isEqual(LocalDate.now())){
+                    localDateIntegerEntry.setValue(localDateIntegerEntry.getValue()+consumo);
+                    existe.set(true);
+                }
+            });
+            if(!existe.get()){
+                existingConsumo.put(LocalDate.now(),consumo);
+            }
+            existingUsuario.setConsumo(existingConsumo);
             usuarioRepository.save(existingUsuario);
 
             return ResponseEntity.ok(existingUsuario);
