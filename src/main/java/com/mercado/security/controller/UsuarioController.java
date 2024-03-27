@@ -74,8 +74,9 @@ public class UsuarioController {
 
     }
 
-    @PutMapping("/{cedula}")
-    public ResponseEntity<Usuario> updateUsuario(@PathVariable String cedula,@RequestBody Integer consumo) {
+    @PutMapping(value = "/{cedula}")
+        public ResponseEntity<Usuario> updateUsuario(@PathVariable String cedula,@RequestParam Integer consumo) {
+        System.out.println(consumo);
         Optional<Usuario> optionalUsuario = usuarioRepository.findUserByCedula(cedula);
 
         if (optionalUsuario.isPresent()) {
@@ -83,18 +84,27 @@ public class UsuarioController {
 
             existingUsuario.setCreditos(existingUsuario.getCreditos() - 1);
             Map<LocalDate,Integer> existingConsumo=existingUsuario.getConsumo();
-            var consumos=existingConsumo.entrySet();
-            AtomicBoolean existe= new AtomicBoolean(false);
-            consumos.stream().forEach(localDateIntegerEntry -> {
-                if(localDateIntegerEntry.getKey().isEqual(LocalDate.now())){
-                    localDateIntegerEntry.setValue(localDateIntegerEntry.getValue()+consumo);
-                    existe.set(true);
+            if(existingConsumo!=null){
+                var consumos=existingConsumo.entrySet();
+                AtomicBoolean existe= new AtomicBoolean(false);
+                consumos.stream().forEach(localDateIntegerEntry -> {
+                    if(localDateIntegerEntry.getKey().isEqual(LocalDate.now())){
+                        localDateIntegerEntry.setValue(localDateIntegerEntry.getValue()+consumo);
+                        existe.set(true);
+                    }
+                });
+                if(!existe.get()){
+                    existingConsumo.put(LocalDate.now(),consumo);
                 }
-            });
-            if(!existe.get()){
-                existingConsumo.put(LocalDate.now(),consumo);
+                existingUsuario.setConsumo(existingConsumo);
+
             }
-            existingUsuario.setConsumo(existingConsumo);
+            else{
+                Map<LocalDate,Integer> nuevoConsumo=new HashMap<>();
+                nuevoConsumo.put(LocalDate.now(),consumo);
+                existingUsuario.setConsumo(nuevoConsumo);
+            }
+
             usuarioRepository.save(existingUsuario);
 
             return ResponseEntity.ok(existingUsuario);
